@@ -1,5 +1,5 @@
 // Variante de solo lectura del detalle de pedido de Ropa v2.
-import { esc, qs, qsa } from "../ui/dom.js";
+import { esc, qs } from "../ui/dom.js";
 import { ICONO, svgCategoria } from "../ui/iconos.js";
 import { fmt } from "../nucleo/moneda.js";
 import { fdateShort } from "../nucleo/fechas.js";
@@ -19,6 +19,10 @@ function fraccion(pagadas, cuotas, pasos = 24) {
   return n === 0 ? "" : `${n}/24`;
 }
 
+export function nivelCarta(indice, activa, cantidad) {
+  return activa < 0 ? indice + 1 : cantidad - Math.abs(indice - activa);
+}
+
 export function abrirDetallePedido(id) {
   const o = pedidoPorId(id);
   if (!o) return;
@@ -30,7 +34,7 @@ export function abrirDetallePedido(id) {
     const foto = i.foto ?? i.photo;
     return plantilla(DCARD, {
       ph: esc(foto ?? ""),
-      thumb: foto ? `<img class="dthumb" src="${esc(foto)}" alt="">` : `<div class="dthumb">${svgCategoria(i.categoria)}</div>`,
+      thumb: foto ? `<img class="dthumb" src="${esc(foto)}" alt="">` : `<span class="dthumb" aria-hidden="true">${svgCategoria(i.categoria)}</span>`,
       precio: fmt(precioItem(i) * qtyDe(i)),
       nombre: esc(nombreItem(i)) || "Producto",
       label: esc(nombreItem(i)) || "producto",
@@ -60,82 +64,24 @@ export function abrirDetallePedido(id) {
   }));
 
   const dstack = qs("#dstack");
-  if (dstack) {
-    /* Abanico tipo carta: thumb arriba y texto abajo, rotación suave (tope 4°),
-       tarjetas ~120–150px de ancho por ~110–140px de alto. La seleccionada sube y
-       crece sin desbordar: el alto del stack se mide contra la caja ya rotada. */
-    const ROT_MAX = 4;            /* tope duro, Nico pidió ~3° con máximo 4° */
-    const CARD_W = 132;           /* ancho base en el rango 120–150 */
-    const CARD_H = 122;           /* alto base en el rango 110–140 */
-    const CRECE = 12;             /* px extra de ancho/alto al seleccionar */
-    const SUBE = 14;              /* px que sube la seleccionada */
-    const SOLAPE = 34;            /* solapamiento entre cartas */
-    const relayout = () => {
-      const cs = [...dstack.querySelectorAll(".dcard")];
-      const n = cs.length;
-      if (!n) return;
-      const anchoCaja = dstack.clientWidth || CARD_W * 3;
-      const anchoSel = CARD_W + CRECE;
-      const rotMax = n > 1 ? Math.min(ROT_MAX, 9 / (n - 1)) : 0;
-      /* ancho total: cartas + solapes + la proyección horizontal de la rotación */
-      const paso = Math.min(CARD_W - SOLAPE, Math.max(18, (anchoCaja - anchoSel - 24) / Math.max(1, n - 1)));
-      const projX = (CARD_H / 2) * Math.abs(Math.sin(rotMax * Math.PI / 180));
-      const total = CARD_W + paso * (n - 1) + projX * 2 + CRECE;
-      const escala = total > anchoCaja ? anchoCaja / total : 1;
-      const off = paso * escala;
-      const w = (CARD_W * escala) | 0;
-      const h = (CARD_H * escala) | 0;
-      const grow = CRECE * escala;
-      const grados = i => (i - (n - 1) / 2) * rotMax;
-      /* Centrado del conjunto: se mide la caja rotada de cada carta (con su
-         proyección horizontal exacta) y se desplaza todo el abanico para que su
-         bounding box quede centrada en el canal. Se calcula con la geometría base
-         (sin contar el crecimiento de la seleccionada) para que al tocar una carta
-         el conjunto no salte: la seleccionada crece alrededor de su propio centro. */
-      let minX = Infinity, maxX = -Infinity;
-      cs.forEach((_, i) => {
-        const th = grados(i) * Math.PI / 180;
-        const cx = i * off + w / 2;
-        const semi = (Math.abs(w * Math.cos(th)) + Math.abs(h * Math.sin(th))) / 2;
-        minX = Math.min(minX, cx - semi);
-        maxX = Math.max(maxX, cx + semi);
-      });
-      const shiftX = (anchoCaja - (maxX - minX)) / 2 - minX;
-      cs.forEach((c, i) => {
-        const sel = c.classList.contains("sel");
-        const rot = grados(i);
-        const th = rot * Math.PI / 180;
-        const yBase = Math.abs(i - (n - 1) / 2) * 1.2;
-        const y = sel ? -SUBE : yBase;
-        c.style.width = (w + (sel ? grow : 0)) + "px";
-        c.style.height = (h + (sel ? grow : 0)) + "px";
-        c.style.transformOrigin = "50% 50%";
-        c.style.transform = `translate(${shiftX + i * off}px, ${y}px) rotate(${rot}deg)`;
-        c.style.zIndex = sel ? 120 : i + 2;
-        /* compensa la proyección vertical de la rotación para no recortar esquinas */
-        const alto = h + (sel ? grow : 0);
-        const hProy = Math.abs(w * Math.sin(th)) + alto * Math.cos(th);
-        c.style.marginTop = Math.max(0, (hProy - alto) / 2) + "px";
-      });
-      /* alto del stack medido contra su caja, con respiro para la que sobresale */
-      const base = dstack.getBoundingClientRect().top;
-      let bottom = 0;
-      cs.forEach(c => { bottom = Math.max(bottom, c.getBoundingClientRect().bottom); });
-      dstack.style.height = Math.ceil(bottom - base + 18) + "px";
+  const cartas = [...dstack.querySelectorAll(".dcard")];
+  const huecos = cartas.length - 1;
+  let activa = -1;
+  dstack.style.setProperty("--huecos", Math.max(1, huecos));
+  cartas.forEach((c, i) => {
+    const lado = i - huecos / 2;
+    c.style.setProperty("--lado", lado);
+    c.style.setProperty("--giro", `${huecos > 0 ? 8 * lado / huecos : 0}deg`);
+    c.style.setProperty("--nivel", nivelCarta(i, activa, cartas.length));
+    c.onclick = () => {
+      c.focus({ preventScroll: true });
+      if (activa === i) { abrirLightbox(c.dataset.ph); return; }
+      cartas[activa]?.setAttribute("aria-pressed", "false");
+      activa = i;
+      c.setAttribute("aria-pressed", "true");
+      cartas.forEach((carta, j) => carta.style.setProperty("--nivel", nivelCarta(j, activa, cartas.length)));
     };
-    relayout();
-    let sel = null;
-    qsa(".dcard", dstack).forEach(c => {
-      c.onclick = () => {
-        c.focus({ preventScroll: true });
-        if (sel === c) { abrirLightbox(c.dataset.ph); return; }
-        qsa(".dcard", dstack).forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-pressed", "false"); });
-        c.classList.add("sel"); c.setAttribute("aria-pressed", "true"); sel = c; relayout();
-      };
-      c.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); c.click(); } };
-    });
-    setTimeout(relayout, 60);
-  }
+  });
 
   qs("#hClose").onclick = cerrarHoja;
   qs("#dCerrar").onclick = cerrarHoja;
@@ -162,13 +108,13 @@ const HOJA = `
   </div>`;
 
 const DCARD = `
-    <div class="dcard" role="button" tabindex="0" aria-pressed="false" aria-label="Seleccionar {{label}}" data-ph="{{ph}}">
+    <button type="button" class="dcard" aria-pressed="false" aria-label="Seleccionar {{label}}, {{precio}}" data-ph="{{ph}}">
       {{thumb}}
-      <div class="dcard-txt">
-        <div class="dprecio monto">{{precio}}</div>
-        <div class="dnombre contenedor-texto">{{nombre}}</div>
-      </div>
-    </div>`;
+      <span class="dcard-txt">
+        <span class="dprecio monto">{{precio}}</span>
+        <span class="dnombre contenedor-texto">{{nombre}}</span>
+      </span>
+    </button>`;
 
 const BLOQUE_CUOTAS = `
       <div class="barra-cuotas barra-det" data-r="{{r}}"><div class="relleno"></div></div>

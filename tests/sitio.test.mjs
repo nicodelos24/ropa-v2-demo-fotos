@@ -3,7 +3,21 @@ import { readFile, readdir } from "node:fs/promises";
 import { test } from "node:test";
 import { pedidoPorId, pedidos, pedidosFiltrados, productos } from "../src/estado/store.js";
 
+import { nivelCarta } from "../src/pantallas/pantalla-pedido-detalle.js";
+
 const sitio = new URL("../", import.meta.url);
+
+test("la carta activa queda delante y el resto se ordena por cercanía", () => {
+  const niveles = (cantidad, activa) => Array.from({ length: cantidad }, (_, i) => nivelCarta(i, activa, cantidad));
+  assert.deepEqual(niveles(3, -1), [1, 2, 3]);
+  assert.deepEqual(niveles(3, 0), [3, 2, 1]);
+  assert.deepEqual(niveles(3, 1), [2, 3, 2]);
+  assert.deepEqual(niveles(3, 2), [1, 2, 3]);
+  assert.deepEqual(niveles(2, 0), [2, 1]);
+  assert.deepEqual(niveles(2, 1), [1, 2]);
+  assert.deepEqual(niveles(1, 0), [1]);
+  assert.deepEqual(niveles(5, 1), [4, 5, 4, 3, 2]);
+});
 
 test("hay seis JPEG sintéticos y los pedidos muestran fotos del inventario", async () => {
   const fotos = new Set(productos().map(p => p.photo));
