@@ -1,0 +1,103 @@
+/* tokens.css — Ropa v2 · design system (rediseño total).
+   Identidad: "premium retail, vivo". Fondo profundo con halo, superficies de tres planos,
+   sombras escalonadas reales, un solo acento teal, jerarquía tipográfica con display grande. */
+
+:root{
+  color-scheme:dark;
+
+  /* ---- superficies: neutro frío, 3 planos + halo del fondo ---- */
+  --bg:#090b11; --bg-elev:#11141d; --card:#151925; --card-hi:#1b2030; --card2:#1d2231; --card3:#272d40;
+  --line:rgba(255,255,255,.075); --line-strong:rgba(255,255,255,.15);
+  --edge-light:rgba(255,255,255,.07);            /* borde de luz superior de tarjetas */
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 42%);
+  --txt:#f5f6fb; --txt-2:#c6cad9; --mut:#9499ae;
+  --overlay:rgba(5,7,12,.72);
+
+  /* ---- acento de marca: teal único ---- */
+  --acc:#2ee6c8; --acc-strong:#12cdb1; --acc-ink:#04241f; --acc-soft:rgba(46,230,200,.14);
+  --acc-text:#5ff2db;
+  --grad-acc:linear-gradient(135deg,#46f2d4 0%,#14c3ab 55%,#0fb3a8 100%);
+  --grad-acc-soft:linear-gradient(150deg,rgba(46,230,200,.20),rgba(46,230,200,.04) 60%);
+  --halo-a:rgba(46,230,200,.13); --halo-b:rgba(109,141,255,.11);
+
+  /* navegación activa */
+  --nav:#86a8ff;
+
+  /* semánticos por estado */
+  --c-green:#31d778;  --c-green-ink:#04251a;  --c-green-text:#84edb0;
+  --c-orange:#ff9f45; --c-orange-ink:#3a2000; --c-orange-text:#ffc089;
+  --c-blue:#6f90ff;   --c-blue-ink:#081a5e;   --c-blue-text:#b4c3ff;
+  --c-yellow:#ffd75e; --c-yellow-ink:#3a2d00; --c-yellow-text:#ffe8a3;
+  --c-red:#ff6382;
+
+  /* acentos de métrica */
+  --pcash:#4fe4c4; --pcheck:#5fe6a0; --pclock:#ffca73; --pcal:#8ab7ff; --ptag:#f79bd0; --ppeople:#bba3ff;
+
+  /* ---- tipografía ---- */
+  --fz-2xs:10.5px; --fz-xs:11.5px; --fz-sm:12.5px; --fz-md:14px; --fz-lg:15.5px; --fz-xl:19px; --fz-2xl:23px;
+  --fz-3xl:28px; --fz-hero:44px; --fz-display:34px;
+  --lh-tight:1.12; --lh-snug:1.32; --lh-body:1.55;
+
+  /* ---- espaciado 4/8 ---- */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px; --s-8:32px;
+
+  /* ---- radios: generosos, estilo retail ---- */
+  --r-sm:12px; --r-md:18px; --r-lg:22px; --r-xl:26px; --r-2xl:30px; --r-full:999px;
+
+  /* ---- elevación escalonada (3 niveles + glow del acento) ---- */
+  --sh-1:0 1px 2px rgba(3,5,10,.5), 0 3px 12px rgba(3,5,10,.35);
+  --sh-2:0 2px 6px rgba(3,5,10,.45), 0 14px 34px rgba(3,5,10,.45);
+  --sh-3:0 6px 16px rgba(3,5,10,.45), 0 30px 70px rgba(3,5,10,.55);
+  --sh-acc:0 10px 30px rgba(46,230,200,.30), 0 3px 10px rgba(46,230,200,.20);
+  --inset-hair:inset 0 1px 0 var(--edge-light);
+  --blur:saturate(1.45) blur(22px);
+
+  /* ---- motion ---- */
+  --t-fast:120ms; --t-med:210ms; --t-slow:340ms;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --spring:cubic-bezier(.34,1.42,.5,1);
+
+  /* ---- areas seguras ---- */
+  --nav-h:70px;
+  --safe-b:env(safe-area-inset-bottom, 0px);
+  --safe-t:env(safe-area-inset-top, 0px);
+}
+
+html[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f3f5fa; --bg-elev:#ffffff; --card:#ffffff; --card-hi:#fbfcff; --card2:#eef0f7; --card3:#e4e7f1;
+  --line:rgba(22,28,50,.085); --line-strong:rgba(22,28,50,.18);
+  --edge-light:rgba(255,255,255,.95);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0) 45%);
+  --txt:#141724; --txt-2:#3b4055; --mut:#666c85;
+  --overlay:rgba(18,22,38,.45);
+  --acc:#0a9c8b; --acc-strong:#067064; --acc-ink:#ffffff; --acc-soft:rgba(11,181,160,.12);
+  --acc-text:#05685c;
+  /* en claro el relleno de acento lleva texto blanco: tiene que ser oscuro para pasar AA */
+  --grad-acc:linear-gradient(135deg,#0a7f72 0%,#067064 60%,#06645a 100%);
+  --grad-acc-soft:linear-gradient(150deg,rgba(11,181,160,.16),rgba(11,181,160,.02) 60%);
+  --halo-a:rgba(11,181,160,.10); --halo-b:rgba(109,141,255,.09);
+  --nav:#3f63d8;
+  --c-green:#12914f;  --c-green-ink:#ffffff;  --c-green-text:#0b6c3b;
+  --c-orange:#cf6f10; --c-orange-ink:#ffffff; --c-orange-text:#8a4a00;
+  --c-blue:#3f63d8;   --c-blue-ink:#ffffff;   --c-blue-text:#25409f;
+  --c-yellow:#c79500; --c-yellow-ink:#3a2d00; --c-yellow-text:#6f5800;
+  --c-red:#d42a4f;
+  --pcash:#0a9384; --pcheck:#12914f; --pclock:#a86a1a; --pcal:#3f63d8; --ptag:#bf4c8b; --ppeople:#6d4bc4;
+  --sh-1:0 1px 2px rgba(24,30,52,.05), 0 3px 12px rgba(24,30,52,.07);
+  --sh-2:0 2px 6px rgba(24,30,52,.06), 0 14px 32px rgba(24,30,52,.09);
+  --sh-3:0 6px 16px rgba(24,30,52,.08), 0 28px 64px rgba(24,30,52,.13);
+  --sh-acc:0 10px 26px rgba(11,181,160,.28), 0 3px 10px rgba(11,181,160,.16);
+  --inset-hair:inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+/* reducción de movimiento: primero de todo */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}

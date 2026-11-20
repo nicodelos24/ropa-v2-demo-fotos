@@ -1,0 +1,817 @@
+/* componentes.css — Ropa v2 · rediseño "premium retail, vivo".
+   Superficies de tres planos con borde de luz y sombra escalonada, jerarquía de tamaños
+   (primaria / mediana / compacta), squircle de íconos con color de métrica, nav de vidrio. */
+
+/* ==================== SUPERFICIES BASE ==================== */
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:15px 16px; margin-bottom:11px;
+  box-shadow:var(--sh-1), var(--inset-hair);
+  transition:transform var(--t-med) var(--ease-out), box-shadow var(--t-med), border-color var(--t-med), background var(--t-med);
+}
+.card::before,.midcard::before,.tile::before,.sett-card::before,.cal::before,.cli::before,.ev::before,.inv-card::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:var(--sheen); opacity:.7;
+}
+.card{position:relative}
+.card:hover{transform:translateY(-2px); box-shadow:var(--sh-2), var(--inset-hair); border-color:var(--line-strong)}
+.card:active{transform:scale(.975); box-shadow:var(--sh-1)}
+.card-fila{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; position:relative}
+.card-titulo{font-size:var(--fz-lg); font-weight:750; letter-spacing:-.25px; overflow-wrap:anywhere}
+.card-monto{font-size:var(--fz-lg); font-weight:800; flex-shrink:0; letter-spacing:-.4px}
+.card-sub{font-size:var(--fz-sm); color:var(--mut); margin-top:6px; line-height:1.5; position:relative}
+
+/* estado: barra de color a la izquierda + resplandor interior del mismo tono */
+.borde-estado{border-left:4px solid var(--line)}
+.borde-yellow{border-left:3px solid var(--c-yellow)}
+.borde-orange{border-left:3px solid var(--c-orange)}
+.borde-blue{border-left:3px solid var(--c-blue)}
+.borde-green{border-left:3px solid var(--c-green)}
+.borde-yellow{box-shadow:var(--sh-1), var(--inset-hair), inset 14px 0 22px -18px color-mix(in srgb,var(--c-yellow) 65%,transparent)}
+.borde-orange{box-shadow:var(--sh-1), var(--inset-hair), inset 14px 0 22px -18px color-mix(in srgb,var(--c-orange) 65%,transparent)}
+.borde-blue{box-shadow:var(--sh-1), var(--inset-hair), inset 14px 0 22px -18px color-mix(in srgb,var(--c-blue) 65%,transparent)}
+.borde-green{box-shadow:var(--sh-1), var(--inset-hair), inset 14px 0 22px -18px color-mix(in srgb,var(--c-green) 65%,transparent)}
+/* Modo oscuro: se quita sólo el resplandor interior (neon) del borde de estado.
+   El color de la barra/borde queda intacto y se conservan sombra base y hairline.
+   --sh-acc no se toca: es global de botones/FAB, ajeno a las tarjetas. */
+html:not([data-theme="light"]) .borde-yellow,
+html:not([data-theme="light"]) .borde-orange,
+html:not([data-theme="light"]) .borde-blue,
+html:not([data-theme="light"]) .borde-green{box-shadow:var(--sh-1), var(--inset-hair)}
+
+/* ---- squircle de ícono con color de su métrica ---- */
+.sq{
+  display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  width:34px; height:34px; border-radius:11px;
+  background:color-mix(in srgb,currentColor 15%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 22%,transparent);
+}
+.sq svg{width:18px; height:18px; stroke-width:1.9}
+.sq-cash{color:var(--pcash)} .sq-check{color:var(--pcheck)} .sq-clock{color:var(--pclock)}
+.sq-cal{color:var(--pcal)}  .sq-tag{color:var(--ptag)}    .sq-people{color:var(--ppeople)}
+
+/* ==================== STACK DE MINIATURAS ==================== */
+.stack{display:flex; align-items:center; gap:9px; margin-bottom:11px; position:relative}
+.stack-mini{display:flex}
+.mini{
+  width:36px; height:36px; border-radius:11px; border:2px solid var(--card); margin-left:-13px;
+  background:var(--card2); display:flex; align-items:center; justify-content:center;
+  color:var(--txt-2); overflow:hidden; flex-shrink:0; box-shadow:var(--sh-1);
+}
+.mini:first-child{margin-left:0}
+.mini img{width:100%; height:100%; object-fit:cover}
+.mini svg{width:17px; height:17px}
+.mini.mas{font-size:11px; color:var(--mut); font-weight:800; margin-left:-6px; z-index:1; background:var(--card3)}
+.stack-n{
+  background:var(--grad-acc); color:var(--acc-ink); font-size:11.5px; font-weight:800;
+  min-width:23px; height:23px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  padding:0 7px; box-shadow:var(--sh-acc);
+}
+
+/* ==================== CHIPS DE FILTRO ==================== */
+.chips{
+  display:flex; gap:7px; overflow-x:auto; padding:10px 0 4px;
+  scrollbar-width:none; -webkit-overflow-scrolling:touch;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto; min-height:44px; padding:9px 15px; border-radius:var(--r-full);
+  border:1.5px solid var(--line); font-size:13px; font-weight:650; color:var(--txt-2);
+  background:color-mix(in srgb,var(--card) 85%,transparent);
+  display:inline-flex; align-items:center; gap:7px;
+  transition:transform var(--t-fast) var(--spring), background var(--t-med), color var(--t-med), border-color var(--t-med), box-shadow var(--t-med);
+}
+.chip::before{
+  content:""; width:7px; height:7px; border-radius:50%; flex-shrink:0;
+  background:currentColor; box-shadow:0 0 0 0 currentColor;
+  animation:latido 2.4s var(--ease-out) infinite;
+}
+.chip-green{color:var(--c-green-text); border-color:color-mix(in srgb,var(--c-green) 40%,var(--line))}
+.chip-orange{color:var(--c-orange-text); border-color:color-mix(in srgb,var(--c-orange) 40%,var(--line))}
+.chip-blue{color:var(--c-blue-text); border-color:color-mix(in srgb,var(--c-blue) 40%,var(--line))}
+.chip-neutral::before{display:none}
+.chip-neutral{color:var(--txt-2)}
+
+/* "Todos" es el estado por defecto: se comporta como el seleccionado, pero sin depender del tono. */
+.chip[data-k="all"]{color:var(--txt)}
+.chip[data-k="all"].on{background:var(--grad-acc); border-color:transparent; color:var(--acc-ink); box-shadow:var(--sh-acc)}
+.chip .n{opacity:.7; font-variant-numeric:tabular-nums; font-weight:700}
+.chip.on{background:var(--grad-acc); border-color:transparent; color:var(--acc-ink); box-shadow:var(--sh-acc)}
+.chip.on::before{background:var(--acc-ink); animation:none; transform:scale(.9)}
+.chip:active{transform:scale(.93)}
+@keyframes latido{
+  0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,currentColor 45%,transparent)}
+  50%{box-shadow:0 0 0 4px transparent}
+}
+
+/* ---- badges de estado ---- */
+.b{
+  font-size:11px; padding:5px 11px; border-radius:var(--r-full); font-weight:750;
+  display:inline-flex; align-items:center; gap:5px; letter-spacing:.1px;
+}
+.b svg{width:12px; height:12px}
+.b-green{background:color-mix(in srgb,var(--c-green) 16%,var(--card2)); color:var(--c-green-text)}
+.b-orange{background:color-mix(in srgb,var(--c-orange) 15%,var(--card2)); color:var(--c-orange-text)}
+.b-blue{background:color-mix(in srgb,var(--c-blue) 17%,var(--card2)); color:var(--c-blue-text)}
+.b-yellow{background:color-mix(in srgb,var(--c-yellow) 14%,var(--card2)); color:var(--c-yellow-text)}
+.b-neutro{background:var(--card2); color:var(--mut); box-shadow:inset 0 0 0 1px var(--line)}
+
+/* ==================== BOTONES ==================== */
+.btn{
+  min-height:48px; border-radius:15px; font-size:var(--fz-md); font-weight:750;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:transform var(--t-fast) var(--spring), filter var(--t-fast), box-shadow var(--t-med), background var(--t-med);
+}
+.btn svg{width:18px; height:18px}
+.btn:active{transform:scale(.96)}
+.btn-primario{width:100%; padding:15px; background:var(--grad-acc); color:var(--acc-ink); box-shadow:var(--sh-acc); margin-top:var(--s-5)}
+.btn-primario:hover{filter:brightness(1.06); transform:translateY(-1px)}
+.btn-ghost{width:100%; padding:14px; background:var(--card2); color:var(--txt-2); border:1px solid var(--line); margin-top:10px; box-shadow:var(--sh-1), var(--inset-hair)}
+.btn-ghost:hover{background:var(--card3); color:var(--txt)}
+.btn-ghost.danger{color:var(--c-red)}
+.btn-mini{
+  width:44px; height:44px; border-radius:13px; background:var(--card2); border:1px solid var(--line);
+  color:var(--txt-2); display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  box-shadow:var(--sh-1), var(--inset-hair);
+  transition:transform var(--t-fast) var(--spring), background var(--t-med), color var(--t-med);
+}
+.btn-mini:hover{background:var(--card3); color:var(--txt)}
+.btn-mini:active{transform:scale(.92)}
+.btn-mini svg{width:18px; height:18px}
+.btn-mini.danger{color:var(--c-red)}
+.cqbtn{background:color-mix(in srgb,var(--c-blue) 13%,var(--card)); color:var(--c-blue-text);
+  border:1.5px solid color-mix(in srgb,var(--c-blue) 55%,var(--line)); font-size:13px; font-weight:750; padding:12px 8px}
+
+/* ==================== CAMPOS ==================== */
+.campo{display:block; margin-bottom:14px}
+.campo-label{display:block; font-size:var(--fz-xs); color:var(--mut); margin:0 2px 7px; font-weight:700; letter-spacing:.5px; text-transform:uppercase}
+.campo input,.campo textarea,.campo select{
+  width:100%; background:var(--card2); border:1px solid var(--line);
+  border-radius:13px; padding:13px 14px; outline:none; color:var(--txt);
+  box-shadow:var(--inset-hair);
+  transition:border-color var(--t-fast), box-shadow var(--t-med), background var(--t-med);
+}
+.campo input::placeholder,.campo textarea::placeholder{color:color-mix(in srgb,var(--mut) 80%,transparent)}
+.campo input:hover,.campo textarea:hover{border-color:var(--line-strong)}
+.campo input:focus,.campo textarea:focus,.campo select:focus{border-color:var(--acc); box-shadow:0 0 0 3.5px var(--acc-soft)}
+.campo input[aria-invalid="true"]{border-color:var(--c-red); box-shadow:0 0 0 3.5px color-mix(in srgb,var(--c-red) 20%,transparent)}
+.ferr{display:flex; gap:6px; align-items:center; color:var(--c-red); font-size:12.5px; font-weight:650; margin-top:7px}
+.ferr svg{width:14px; height:14px; flex-shrink:0}
+fieldset{border:none}
+.seg{display:flex; gap:6px; flex-wrap:wrap}
+.seg button{
+  min-height:44px; padding:11px 15px; border-radius:var(--r-full); background:var(--card2);
+  border:1px solid var(--line); font-size:13px; font-weight:650; color:var(--txt-2);
+  transition:transform var(--t-fast) var(--spring), background var(--t-med), color var(--t-med), border-color var(--t-med), box-shadow var(--t-med);
+}
+.seg button:active{transform:scale(.94)}
+.seg button svg{width:15px; height:15px; vertical-align:-3px; margin-right:4px}
+.seg button.on{background:var(--grad-acc); color:var(--acc-ink); border-color:transparent; box-shadow:var(--sh-acc)}
+.seg button.on.s-green{background:var(--c-green); border-color:transparent; color:var(--c-green-ink); box-shadow:0 6px 20px color-mix(in srgb,var(--c-green) 35%,transparent)}
+.seg button.on.s-orange{background:var(--c-orange); border-color:transparent; color:var(--c-orange-ink); box-shadow:0 6px 20px color-mix(in srgb,var(--c-orange) 35%,transparent)}
+.seg button.on.s-blue{background:var(--c-blue); border-color:transparent; color:var(--c-blue-ink); box-shadow:0 6px 20px color-mix(in srgb,var(--c-blue) 35%,transparent)}
+.seg button.on.s-yellow{background:var(--c-yellow); border-color:transparent; color:var(--c-yellow-ink); box-shadow:0 6px 20px color-mix(in srgb,var(--c-yellow) 35%,transparent)}
+
+/* selector de producto del inventario (editor de pedido) */
+.pick{
+  position:relative; background:var(--card2); border:1.5px solid var(--line); border-radius:14px;
+  padding:8px 7px; text-align:left; overflow:hidden;
+  transition:transform var(--t-fast) var(--spring), border-color var(--t-med), box-shadow var(--t-med), background var(--t-med);
+}
+.pick.on{border-color:var(--acc); background:color-mix(in srgb,var(--acc) 9%,var(--card2)); box-shadow:0 0 0 3px var(--acc-soft)}
+.pick:active{transform:scale(.95)}
+.pick .pickcheck{
+  position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:var(--r-full);
+  background:var(--acc); color:var(--acc-ink); display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(.5); transition:opacity var(--t-fast), transform var(--t-med) var(--spring);
+  box-shadow:var(--sh-acc); pointer-events:none;
+}
+.pick.on .pickcheck{opacity:1; transform:none}
+.pick .pickcheck svg{width:15px; height:15px; stroke-width:2.6}
+.pick .thumb{width:100%; aspect-ratio:1; border-radius:10px; object-fit:cover; margin-bottom:6px; display:block}
+.pick .thumb.ph{background:var(--card3); display:flex; align-items:center; justify-content:center; color:var(--mut)}
+.pick .thumb.ph svg{width:22px; height:22px}
+.pick h5{font-size:12px; line-height:1.3; font-weight:650; overflow-wrap:anywhere}
+.pick p{font-size:11.5px; color:var(--acc-text); margin-top:3px; font-weight:800; font-variant-numeric:tabular-nums}
+
+/* ==================== FAB ==================== */
+.fab{
+  position:fixed; right:18px; bottom:calc(var(--nav-h) + 18px + var(--safe-b));
+  width:58px; height:58px; border-radius:20px; background:var(--grad-acc); color:var(--acc-ink);
+  box-shadow:var(--sh-acc), var(--inset-hair); z-index:30;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform var(--t-fast) var(--spring), opacity var(--t-med), box-shadow var(--t-med);
+}
+.fab:hover{transform:translateY(-2px) scale(1.03); box-shadow:var(--sh-acc), 0 16px 40px rgba(46,230,200,.35)}
+.fab:active{transform:scale(.9)}
+.fab svg{width:25px; height:25px; stroke-width:2.4}
+
+/* ==================== STATS DEL TOPBAR ==================== */
+.stats{display:flex; gap:8px; margin-top:12px}
+.stat{
+  flex:1; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 12px;
+  box-shadow:var(--sh-1), var(--inset-hair);
+}
+.stat b{display:block; font-size:16.5px; font-weight:800; letter-spacing:-.4px; font-variant-numeric:tabular-nums}
+.stat small{color:var(--mut); font-size:11px; font-weight:600}
+
+/* ==================== BÚSQUEDA ==================== */
+.buscar{
+  display:flex; align-items:center; gap:9px; background:var(--card2);
+  border:1px solid var(--line); border-radius:14px; padding:0 13px; margin-top:12px;
+  box-shadow:var(--inset-hair);
+  transition:border-color var(--t-fast), box-shadow var(--t-med), background var(--t-med);
+}
+.buscar:focus-within{border-color:var(--acc); box-shadow:0 0 0 3.5px var(--acc-soft); background:var(--card)}
+.buscar svg{width:16px; height:16px; color:var(--mut); flex-shrink:0}
+.buscar input{background:none; border:none; padding:12px 0; outline:none; width:100%}
+
+/* ==================== FILAS / EVENTOS ==================== */
+.ev{
+  position:relative; background:var(--card); border:1px solid var(--line); border-radius:16px;
+  padding:12px 14px; margin-bottom:8px; display:flex; gap:11px; align-items:center;
+  box-shadow:var(--sh-1), var(--inset-hair);
+  transition:transform var(--t-med) var(--ease-out), box-shadow var(--t-med), border-color var(--t-med);
+}
+.ev:hover{transform:translateY(-1px); box-shadow:var(--sh-2), var(--inset-hair); border-color:var(--line-strong)}
+.ev:active{transform:scale(.98)}
+.ev-txt{flex:1; min-width:0; position:relative}
+.ev .dot{width:9px; height:9px; border-radius:50%; flex-shrink:0; box-shadow:0 0 10px color-mix(in srgb,currentColor 45%,transparent)}
+.ev .ev-ico{
+  width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; background:color-mix(in srgb,currentColor 13%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 20%,transparent);
+}
+.ev .ev-ico svg{width:17px; height:17px; stroke-width:1.9}
+.ev .ev-ico.t-yellow{color:var(--c-yellow)}
+.ev .ev-ico.t-orange{color:var(--c-orange)}
+.ev .ev-ico.t-blue{color:var(--c-blue)}
+.ev .ev-ico.t-green{color:var(--c-green)}
+.ev .ev-ico.t-red{color:var(--c-red)}
+.ev .ev-ico.t-neutral{color:var(--mut)}
+.ev h4{font-size:var(--fz-md); font-weight:700; overflow-wrap:anywhere; letter-spacing:-.1px}
+.ev p{font-size:var(--fz-sm); color:var(--mut)}
+.ev-fecha{font-size:var(--fz-sm); color:var(--mut); text-align:right; flex-shrink:0; font-variant-numeric:tabular-nums; line-height:1.4}
+.ev-fecha b{color:var(--acc-text); font-weight:750}
+.sect-titulo{
+  display:flex; align-items:center; gap:7px;
+  font-size:var(--fz-2xs); font-weight:800; margin:26px 0 10px; color:var(--mut);
+  text-transform:uppercase; letter-spacing:1.4px;
+}
+.sect-titulo svg{width:13px; height:13px; color:var(--acc-text)}
+
+/* ==================== AGENDA / CALENDARIO ==================== */
+.cal{
+  position:relative; background:var(--card); border:1px solid var(--line); border-radius:var(--r-xl);
+  padding:16px 15px 14px; margin-bottom:14px; box-shadow:var(--sh-2), var(--inset-hair);
+}
+.cal-cab{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; position:relative}
+.cal-cab b{font-size:16px; text-transform:capitalize; letter-spacing:-.3px; font-weight:750}
+.cal-cab button{
+  width:44px; height:44px; border-radius:13px; background:var(--card2); color:var(--txt-2);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--inset-hair);
+  transition:background var(--t-med), transform var(--t-fast) var(--spring), color var(--t-med);
+}
+.cal-cab button:hover{background:var(--card3); color:var(--txt)}
+.cal-cab button:active{transform:scale(.9)}
+.cal-cab button svg{width:18px; height:18px}
+.cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center; position:relative}
+.cal-dia{min-height:44px}
+.cal-grid .dow{font-size:10px; color:var(--mut); padding:4px 0 6px; font-weight:800; letter-spacing:.6px}
+.cal-dia{
+  aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:13px; border-radius:12px; position:relative; cursor:pointer; padding-bottom:5px; font-weight:600;
+  transition:transform var(--t-fast) var(--spring), background var(--t-fast), box-shadow var(--t-fast), color var(--t-fast);
+}
+.cal-dia:hover{background:var(--card2)}
+.cal-dia:active{transform:scale(.9)}
+.cal-dia.hoy{background:var(--card2); font-weight:800; box-shadow:inset 0 0 0 1.5px var(--line-strong)}
+.cal-dia.sel{background:var(--grad-acc); color:var(--acc-ink); font-weight:800; box-shadow:var(--sh-acc)}
+.cal-dia.tiene{font-weight:750; color:var(--txt)}
+.cal-dia .dots{position:absolute; bottom:3px; left:0; right:0; display:flex; justify-content:center; gap:2.5px}
+.cal-dia .dots i{width:4px; height:4px; border-radius:50%; display:block}
+.cal-dia.sel .dots i{outline:1px solid rgba(0,0,0,.22)}
+.ayuda{font-size:11px; color:var(--mut); text-align:center; margin-top:10px; position:relative}
+
+/* ---- Alternador Calendario ↔ Semanas (segmentado, estilo propio V2) ---- */
+.agenda-switch{
+  display:flex; gap:4px; padding:4px; margin-bottom:14px;
+  background:var(--card2); border:1px solid var(--line); border-radius:var(--r-full);
+  box-shadow:var(--sh-1);
+}
+.agenda-switch-b{
+  flex:1; display:flex; align-items:center; justify-content:center; gap:7px;
+  padding:9px 12px; border-radius:var(--r-full); font-size:var(--fz-sm); font-weight:750;
+  color:var(--mut); background:transparent;
+  transition:background var(--t-med), color var(--t-med), box-shadow var(--t-med), transform var(--t-fast) var(--spring);
+}
+.agenda-switch-b svg{width:15px; height:15px}
+.agenda-switch-b:hover{color:var(--txt)}
+.agenda-switch-b:active{transform:scale(.96)}
+.agenda-switch-b.on{
+  background:var(--grad-acc); color:var(--acc-ink); box-shadow:var(--sh-acc);
+}
+
+/* ---- Vista Semanas: franja LU…DO + pedidos agrupados por día ---- */
+.semana{
+  position:relative; background:var(--card); border:1px solid var(--line);
+  border-radius:var(--r-xl); padding:16px 15px 6px; margin-bottom:76px;
+  box-shadow:var(--sh-2), var(--inset-hair);
+}
+.sem-cab{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; position:relative}
+.sem-cab b{font-size:16px; letter-spacing:-.3px; font-weight:750; text-transform:capitalize}
+.sem-cab button{
+  width:44px; height:44px; border-radius:13px; background:var(--card2); color:var(--txt-2);
+  display:flex; align-items:center; justify-content:center; box-shadow:var(--inset-hair);
+  transition:background var(--t-med), transform var(--t-fast) var(--spring), color var(--t-med);
+}
+.sem-cab button:hover{background:var(--card3); color:var(--txt)}
+.sem-cab button:active{transform:scale(.9)}
+.sem-cab button svg{width:18px; height:18px}
+.sem-franja{display:grid; grid-template-columns:repeat(7,1fr); gap:5px}
+.sem-dia{
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:3px;
+  min-height:74px; padding:9px 2px 7px; border-radius:var(--r-md);
+  background:var(--card2); border:1px solid var(--line); color:var(--txt-2);
+  transition:transform var(--t-fast) var(--spring), background var(--t-fast),
+    box-shadow var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+}
+.sem-dia:hover{background:var(--card3)}
+.sem-dia:active{transform:scale(.94)}
+.sem-dia.hoy{border-color:color-mix(in srgb,var(--acc) 45%,var(--line))}
+.sem-dia.sel{
+  background:var(--grad-acc); color:var(--acc-ink); border-color:transparent; box-shadow:var(--sh-acc);
+}
+.sem-dow{font-size:10px; font-weight:800; letter-spacing:.6px; opacity:.85}
+.sem-num{font-size:18px; font-weight:800; line-height:1; font-variant-numeric:tabular-nums}
+.sem-dots{display:flex; gap:2.5px; height:5px; align-items:center; justify-content:center}
+.sem-dots i{width:4px; height:4px; border-radius:50%; display:block}
+.sem-dia.sel .sem-dots i{outline:1px solid rgba(0,0,0,.22)}
+
+/* Agrupación por día con eje vertical, inspirada en la referencia (estructura, no estilo). */
+.sem-grupo{margin-top:16px}
+.sem-grupo-titulo{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding-left:18px; margin-bottom:8px; position:relative;
+}
+.sem-grupo-titulo::before{
+  content:""; position:absolute; left:3px; top:50%; width:8px; height:8px;
+  border-radius:50%; background:var(--acc); transform:translateY(-50%); box-shadow:0 0 0 3px var(--acc-soft);
+}
+.sem-grupo-dia{
+  font-size:var(--fz-xs); font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--acc-text);
+}
+.sem-grupo-n{font-size:var(--fz-2xs); color:var(--mut); font-weight:700}
+.sem-grupo-eje{
+  position:relative; margin-left:6px; padding-left:12px;
+  border-left:2px solid color-mix(in srgb,var(--acc) 28%,var(--line));
+  display:flex; flex-direction:column; gap:9px;
+}
+
+/* ==================== INVENTARIO ==================== */
+.inv{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.inv-card{
+  position:relative; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; cursor:zoom-in;
+  box-shadow:var(--sh-1), var(--inset-hair);
+  transition:transform var(--t-med) var(--ease-out), box-shadow var(--t-med), border-color var(--t-med);
+}
+.inv-card:hover{transform:translateY(-2px); box-shadow:var(--sh-2), var(--inset-hair)}
+.inv-card:active{transform:scale(.96)}
+.inv-foto{width:100%; aspect-ratio:1; object-fit:cover; display:block; background:var(--card2); position:relative}
+.inv-ph{
+  width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  padding-right:34px; padding-bottom:40px; color:var(--ptag); position:relative;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--ptag) 14%,var(--card2)),var(--card2));
+}
+.inv-ph svg{width:30px; height:30px; stroke-width:1.6}
+.inv-cuerpo{padding:9px 10px 11px; position:relative}
+.inv-cuerpo h4{font-size:12.5px; line-height:1.28; word-break:break-word; white-space:normal; font-weight:650}
+.inv-cuerpo p{font-size:11.5px; font-weight:750; color:var(--acc-text); margin-top:3px; font-variant-numeric:tabular-nums}
+.inv-acciones{position:absolute; top:6px; right:6px; display:flex; gap:6px; flex-direction:column; z-index:2}
+.inv-acciones button{
+  width:44px; height:44px; border-radius:13px; background:rgba(12,15,24,.7); backdrop-filter:blur(10px);
+  color:#fff; border:1px solid rgba(255,255,255,.28); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 10px rgba(0,0,0,.3); transition:transform var(--t-fast) var(--spring), background var(--t-med);
+}
+.inv-acciones button:active{transform:scale(.86)}
+.inv-acciones button svg{width:17px; height:17px}
+.inv-acciones button.e svg{color:#a9c2ff}
+.inv-acciones button.d svg{color:#ffab8f}
+html[data-theme="light"] .inv-acciones button{background:rgba(255,255,255,.9); color:#17171f; border-color:rgba(20,20,40,.18)}
+html[data-theme="light"] .inv-acciones button.e svg{color:#2f59d0}
+html[data-theme="light"] .inv-acciones button.d svg{color:#c22a44}
+
+/* ==================== CONTACTOS ==================== */
+.cli{
+  position:relative; background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:14px 15px; margin-bottom:10px; box-shadow:var(--sh-1), var(--inset-hair);
+  transition:transform var(--t-med) var(--ease-out), box-shadow var(--t-med), border-color var(--t-med);
+}
+.cli:hover{transform:translateY(-1px); box-shadow:var(--sh-2), var(--inset-hair); border-color:var(--line-strong)}
+.cli:active{transform:scale(.985)}
+.cli .card-fila{align-items:center; position:relative}
+.avatar{
+  width:42px; height:42px; border-radius:14px; background:var(--grad-acc-soft); color:var(--acc-text);
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex-shrink:0;
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--acc) 40%,transparent);
+}
+.cli-id{display:flex; gap:11px; align-items:center; min-width:0}
+.cli-id h3{font-size:var(--fz-lg); letter-spacing:-.25px; overflow-wrap:anywhere; font-weight:750}
+.cli-id p{font-size:var(--fz-sm); color:var(--mut); line-height:1.5}
+.cli-tel{display:inline-flex; align-items:center; gap:4px}
+.cli-tel svg{width:12px; height:12px; vertical-align:-1.5px}
+.cli-nota{font-size:11.5px; color:var(--mut); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px}
+.cli-wa{
+  width:44px; height:44px; border-radius:14px; flex-shrink:0;
+  border:1.5px solid color-mix(in srgb,var(--c-green) 45%,var(--line));
+  background:color-mix(in srgb,var(--c-green) 12%,var(--card)); color:var(--c-green-text);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform var(--t-fast) var(--spring), background var(--t-med), box-shadow var(--t-med);
+}
+.cli-wa:hover{background:color-mix(in srgb,var(--c-green) 20%,var(--card)); box-shadow:0 6px 18px color-mix(in srgb,var(--c-green) 25%,transparent)}
+.cli-wa:active{transform:scale(.9)}
+.cli-wa svg{width:21px; height:21px}
+.cli-wa.none{
+  border-style:dashed; color:var(--mut); background:transparent; font-size:9.5px; font-weight:750;
+  text-align:center; line-height:1.15; padding:2px; min-width:44px; min-height:44px;
+}
+html[data-theme="light"] .cli-wa.none{color:#4d5168}
+.cdots{display:flex; gap:4px; margin-top:7px; flex-wrap:wrap}
+.cdot{width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; box-shadow:0 0 0 1px color-mix(in srgb,var(--bg) 70%,transparent)}
+
+/* ==================== DETALLE DE PEDIDO ==================== */
+.detail{position:relative}
+.dclose{position:relative}
+.dcards{position:relative; display:block; margin-top:34px; padding-top:16px}
+/* Abanico tipo carta: thumb arriba, texto abajo, formato cuadrado y giro suave. */
+.dcard{
+  position:absolute; left:0; top:0; display:flex; flex-direction:column; align-items:stretch; gap:8px;
+  width:132px; height:122px; min-width:0; overflow:hidden;
+  background:var(--card2); border:1px solid var(--line-strong); border-radius:var(--r-md); padding:11px;
+  box-shadow:var(--sh-2), var(--inset-hair); backface-visibility:hidden; will-change:transform;
+  transition:transform var(--t-slow) var(--ease-out), box-shadow var(--t-med), border-color var(--t-med),
+             width var(--t-slow) var(--ease-out), height var(--t-slow) var(--ease-out),
+             padding var(--t-slow) var(--ease-out), border-radius var(--t-slow) var(--ease-out);
+}
+.dcard:hover{box-shadow:var(--sh-3), var(--inset-hair)}
+/* con una seleccionada, las de atrás muestran sólo el borde: el texto de una
+   tarjeta tapada colgaba a medias por la punta visible bajo la seleccionada */
+.dcard-txt{transition:opacity var(--t-med); min-width:0}
+.dcards:has(.dcard.sel) .dcard:not(.sel) .dcard-txt{opacity:0}
+.dcard.sel{
+  padding:13px; border-radius:var(--r-lg);
+  /* gradiente 100% opaco: --acc-soft es translúcido y dejaba ver las tarjetas de atrás */
+  background:linear-gradient(150deg,var(--card2) 60%,color-mix(in srgb, var(--card2) 88%, var(--acc)));
+  box-shadow:var(--sh-3), var(--inset-hair), 0 0 0 2px var(--acc); border-color:transparent; z-index:120;
+}
+/* halo debajo de la seleccionada (se percibe, no agranda el layout) */
+.dcard.sel::after{
+  content:""; position:absolute; left:6%; right:6%; top:calc(100% - 6px); height:18px;
+  background:var(--acc); border-radius:50%; filter:blur(13px); opacity:.45;
+  z-index:-1; pointer-events:none;
+}
+html[data-theme="light"] .dcard.sel::after{opacity:.30}
+.dcard.sel .dcard-txt{transform:translateX(-2px)}
+.dthumb{
+  width:100%; height:58px; border-radius:var(--r-sm); object-fit:cover; background:var(--card);
+  display:flex; align-items:center; justify-content:center; color:var(--ptag); flex-shrink:0; box-shadow:var(--sh-1);
+}
+.dthumb svg{width:26px; height:26px}
+.dcard-txt{display:flex; flex-direction:column; justify-content:flex-end; flex:1; min-height:0}
+.dprecio{font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:-.3px; font-size:var(--fz-md)}
+.dnombre{font-size:var(--fz-xs); overflow-wrap:anywhere; color:var(--txt-2);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.strow{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:100%}
+.strow .b{
+  display:flex; align-items:center; justify-content:center; gap:6px; min-height:44px; line-height:1.25;
+  cursor:pointer; border:1.5px solid transparent; padding:9px 8px; font-size:12px; font-weight:750;
+  border-radius:var(--r-full);
+  transition:transform var(--t-fast) var(--spring), box-shadow var(--t-med), border-color var(--t-med), filter var(--t-med);
+}
+.strow .b:active{transform:scale(.94)}
+.strow .b.on{border-color:currentColor; box-shadow:var(--sh-1), var(--inset-hair), 0 0 0 3px color-mix(in srgb,currentColor 12%,transparent)}
+.strow .b-yellow{background:color-mix(in srgb,var(--c-yellow) 18%,var(--card2)); color:var(--c-yellow-text)}
+.strow .b-orange{background:color-mix(in srgb,var(--c-orange) 16%,var(--card2)); color:var(--c-orange-text)}
+.strow .b-blue{background:color-mix(in srgb,var(--c-blue) 20%,var(--card2)); color:var(--c-blue-text)}
+.strow .b-green{background:color-mix(in srgb,var(--c-green) 18%,var(--card2)); color:var(--c-green-text)}
+.cuotas-ctrl{margin-top:14px; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:8px; align-items:center}
+.cuotas-ctrl .btn{min-height:46px; padding:12px 8px; white-space:nowrap; width:100%}
+.cuotas-mid{color:var(--mut); font-size:12.5px; text-align:center; line-height:1.35}
+.cuotas-mid b{display:block; white-space:nowrap; color:var(--txt); font-variant-numeric:tabular-nums; font-size:15px; font-weight:800}
+.wa-btn{
+  background:color-mix(in srgb,var(--c-green) 14%,var(--card)); color:var(--c-green-text);
+  border:1.5px solid color-mix(in srgb,var(--c-green) 48%,var(--line)); box-shadow:none;
+}
+.totalbar{
+  display:flex; justify-content:space-between; align-items:center; margin-top:16px;
+  background:var(--grad-acc-soft); border:1px solid color-mix(in srgb,var(--acc) 28%,var(--line));
+  border-radius:16px; padding:13px 16px;
+  box-shadow:var(--inset-hair);
+}
+.totalbar span{color:var(--txt-2); font-weight:650; font-size:13px; text-transform:uppercase; letter-spacing:.8px}
+.totalbar b{color:var(--acc-text); font-size:23px; font-weight:850; letter-spacing:-.6px; font-variant-numeric:tabular-nums}
+
+/* ==================== FILAS DE PRODUCTO A MANO ==================== */
+.prow{display:flex; gap:8px; align-items:center; margin-bottom:8px}
+.prow input{
+  flex:1; background:var(--card2); border:1px solid var(--line); border-radius:13px; padding:12px 14px; outline:none;
+  transition:border-color var(--t-fast), box-shadow var(--t-med);
+}
+.prow input:focus{border-color:var(--acc); box-shadow:0 0 0 3.5px var(--acc-soft)}
+.prow input.precio{max-width:104px}
+.prow .quitar{color:var(--mut); padding:10px; min-width:44px; min-height:44px; font-size:19px; border-radius:12px; transition:color var(--t-fast), background var(--t-fast)}
+.prow .quitar:hover{color:var(--c-red); background:color-mix(in srgb,var(--c-red) 10%,transparent)}
+.prow .foto{
+  color:var(--mut); padding:10px; min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center;
+  opacity:.65; border-radius:12px; transition:opacity var(--t-fast), color var(--t-fast), background var(--t-fast);
+}
+.prow .foto svg{width:18px; height:18px}
+.prow .foto:hover{opacity:1; background:var(--card2)}
+.prow .foto.tiene{opacity:1; color:var(--acc-text)}
+.addp{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; text-align:center;
+  padding:13px; border:1.5px dashed var(--line-strong); border-radius:14px;
+  color:var(--acc-text); font-size:13.5px; font-weight:650;
+  transition:border-color var(--t-fast), background var(--t-fast), transform var(--t-fast) var(--spring);
+}
+.addp svg{width:16px; height:16px; flex-shrink:0}
+.addp:hover{background:var(--acc-soft); border-color:var(--acc)}
+.addp:active{transform:scale(.98)}
+.mini-previa{display:flex; align-items:center; gap:9px; margin:9px 0}
+.mini-previa img{width:44px; height:44px; border-radius:12px; object-fit:cover; box-shadow:var(--sh-1)}
+.mini-previa span{font-size:12px; color:var(--mut)}
+
+/* ==================== AJUSTES ==================== */
+.sett-card{
+  position:relative; background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:17px; margin-bottom:12px; box-shadow:var(--sh-1), var(--inset-hair);
+}
+.sett-card h3{font-size:var(--fz-md); display:flex; gap:10px; align-items:center; margin-bottom:7px; position:relative; font-weight:750; letter-spacing:-.1px}
+.sett-card h3 .sic{
+  display:flex; width:34px; height:34px; border-radius:11px; align-items:center; justify-content:center;
+  background:color-mix(in srgb,currentColor 13%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 20%,transparent);
+}
+.sett-card h3 .sic svg{width:18px; height:18px; stroke-width:1.9}
+.sett-card p{font-size:var(--fz-sm); color:var(--mut); line-height:1.55; position:relative}
+.sett-input{
+  margin-top:11px; width:100%; background:var(--card2); border:1px solid var(--line);
+  border-radius:13px; padding:12px 14px; outline:none; box-shadow:var(--inset-hair);
+  transition:border-color var(--t-fast), box-shadow var(--t-med);
+}
+.sett-input:focus{border-color:var(--acc); box-shadow:0 0 0 3.5px var(--acc-soft)}
+.sett-pie{text-align:center; font-size:12px; color:var(--mut); padding:12px 0 4px}
+
+/* ==================== INICIO: JERARQUÍA ==================== */
+.saludo{margin:2px 0 18px}
+.eyebrow{
+  font-size:var(--fz-2xs); font-weight:800; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--acc-text); margin-bottom:6px;
+}
+.saludo-tit{font-size:var(--fz-display); font-weight:850; letter-spacing:-1.2px; line-height:1.08}
+
+/* primaria: el dinero manda */
+.moneycard{
+  position:relative; display:block; width:100%; text-align:left; overflow:hidden;
+  padding:18px 20px 20px; margin-bottom:12px;
+  border-radius:var(--r-2xl); border:1px solid color-mix(in srgb,var(--acc) 30%,var(--line));
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb,var(--acc) 26%,transparent), transparent 58%),
+    linear-gradient(160deg,color-mix(in srgb,var(--acc) 9%,var(--card-hi)), var(--card));
+  box-shadow:var(--sh-3), var(--inset-hair), 0 0 0 1px color-mix(in srgb,var(--acc) 12%,transparent);
+  transition:transform var(--t-med) var(--ease-out), box-shadow var(--t-med);
+}
+.moneycard::after{
+  content:""; position:absolute; top:-40%; right:-20%; width:220px; height:220px; border-radius:50%;
+  background:radial-gradient(circle,var(--acc-soft),transparent 68%); pointer-events:none;
+}
+.moneycard:hover{transform:translateY(-2px); box-shadow:var(--sh-3), var(--inset-hair), 0 18px 46px color-mix(in srgb,var(--acc) 22%,transparent)}
+.moneycard:active{transform:scale(.978)}
+.money-top{display:flex; align-items:center; gap:9px; position:relative}
+.money-lbl{
+  font-size:var(--fz-xs); font-weight:800; letter-spacing:1.3px; text-transform:uppercase; color:var(--txt-2);
+}
+.money-go{margin-left:auto; color:var(--mut); display:flex}
+.money-go svg{width:18px; height:18px}
+.money-num{
+  display:block; position:relative; margin:10px 0 4px;
+  font-size:var(--fz-hero); font-weight:850; letter-spacing:-2px; line-height:1.02;
+  font-variant-numeric:tabular-nums; color:var(--txt);
+}
+.money-sub{position:relative; font-size:var(--fz-sm); color:var(--txt-2); font-weight:600}
+
+/* secundarias medianas */
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:11px}
+.midcard{
+  position:relative; overflow:hidden; text-align:left;
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:14px 15px 15px; box-shadow:var(--sh-2), var(--inset-hair);
+  transition:transform var(--t-med) var(--ease-out), box-shadow var(--t-med), border-color var(--t-med);
+}
+.midcard:hover{transform:translateY(-2px); box-shadow:var(--sh-3), var(--inset-hair); border-color:var(--line-strong)}
+.midcard:active{transform:scale(.97)}
+.midcard-num{
+  display:block; position:relative; margin-top:11px;
+  font-size:var(--fz-2xl); font-weight:850; letter-spacing:-1px; line-height:1.05;
+  font-variant-numeric:tabular-nums;
+}
+.midcard-lbl{position:relative; font-size:var(--fz-sm); color:var(--mut); font-weight:600; margin-top:2px; display:block}
+
+/* terciarias compactas: una sola fila dividida por líneas, no seis cajas iguales */
+.tiles{
+  display:grid; grid-template-columns:repeat(3,1fr); margin-top:12px;
+  background:color-mix(in srgb,var(--card) 70%,transparent);
+  border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--sh-1), var(--inset-hair); overflow:hidden;
+}
+.tile{
+  position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:5px;
+  padding:13px 12px 14px; text-align:left;
+  transition:background var(--t-med), transform var(--t-fast) var(--spring);
+}
+.tile + .tile::before{content:""; position:absolute; left:0; top:14%; bottom:14%; width:1px; background:var(--line)}
+.tile:hover{background:var(--card2)}
+.tile:active{transform:scale(.96)}
+.tile b{font-size:var(--fz-xl); font-weight:850; letter-spacing:-.6px; font-variant-numeric:tabular-nums; position:relative}
+.tile-lbl{font-size:11px; color:var(--mut); font-weight:600; position:relative}
+.hlink{
+  display:flex; align-items:center; justify-content:center; gap:6px; width:100%;
+  padding:13px; border:1.5px dashed var(--line-strong); border-radius:14px;
+  color:var(--acc-text); font-size:13px; font-weight:650; margin-top:6px;
+  transition:background var(--t-fast), border-color var(--t-fast), transform var(--t-fast) var(--spring);
+}
+.hlink svg{width:14px; height:14px}
+.hlink:hover{background:var(--acc-soft); border-color:var(--acc)}
+.hlink:active{transform:scale(.985)}
+
+/* ==================== ESTADOS VACÍOS ==================== */
+.vacio{text-align:center; padding:48px 20px; color:var(--mut)}
+.vacio .viso{
+  width:70px; height:70px; margin:0 auto 16px; border-radius:22px;
+  background:var(--grad-acc-soft); color:var(--acc-text);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--inset-hair), var(--sh-1), inset 0 0 0 1.5px color-mix(in srgb,var(--acc) 22%,transparent);
+}
+.vacio .viso svg{width:30px; height:30px; stroke-width:1.7}
+.vacio b{display:block; color:var(--txt); font-size:16.5px; margin-bottom:7px; letter-spacing:-.2px}
+.vacio p{font-size:13.5px; line-height:1.6; max-width:300px; margin:0 auto 18px}
+
+/* ==================== NAV INFERIOR DE VIDRIO ==================== */
+nav{
+  position:fixed; left:12px; right:12px; bottom:calc(10px + var(--safe-b)); z-index:25;
+  height:var(--nav-h); padding:0 6px;
+  background:color-mix(in srgb,var(--bg-elev) 72%,transparent);
+  backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+  border:1px solid color-mix(in srgb,var(--line) 100%,transparent);
+  border-radius:24px;
+  box-shadow:var(--sh-3), var(--inset-hair);
+  display:flex; align-items:center; max-width:536px; margin:0 auto;
+}
+nav button{
+  flex:1 1 0; min-width:0; min-height:52px; height:54px; border-radius:18px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  color:var(--mut); font-size:0; font-weight:700; position:relative;
+  transition:color var(--t-med), transform var(--t-fast) var(--spring), background var(--t-med);
+}
+nav button:active{transform:scale(.92)}
+nav button svg{width:23px; height:23px; stroke-width:1.9; transition:transform var(--t-med) var(--spring)}
+nav button .nav-lbl{
+  max-width:none; opacity:1; white-space:nowrap;
+  font-size:9px; font-weight:600; letter-spacing:.1px; line-height:1.05;
+}
+nav button.on{
+  color:var(--acc-text);
+  background:color-mix(in srgb,var(--acc) 13%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 26%,transparent), 0 6px 18px color-mix(in srgb,var(--acc) 16%,transparent);
+}
+nav button.on svg{transform:translateY(-1px) scale(1.05); filter:drop-shadow(0 0 8px color-mix(in srgb,var(--acc) 55%,transparent))}
+
+/* ==================== TOPBAR ==================== */
+.toprow{display:flex; justify-content:space-between; align-items:center; max-width:560px; margin:0 auto}
+.brand{font-size:21px; font-weight:850; letter-spacing:-.7px}
+.brand span{color:var(--acc-text); text-shadow:0 0 14px color-mix(in srgb,var(--acc) 45%,transparent)}
+.sub{font-size:12px; color:var(--mut); margin-top:1px; font-weight:600}
+.theme-btn{
+  width:42px; height:42px; border-radius:14px; background:var(--card); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--sh-1), var(--inset-hair); color:var(--txt-2);
+  transition:transform var(--t-fast) var(--spring), background var(--t-med), color var(--t-med);
+}
+.theme-btn:hover{background:var(--card2); color:var(--txt)}
+.theme-btn:active{transform:scale(.9)}
+.theme-btn svg{width:19px; height:19px}
+
+/* ---- tonos de estado reutilizables (dots y puntos de calendario) ---- */
+.cal-dia .dots i.d-yellow,.cdot.d-yellow{background:var(--c-yellow)}
+.cal-dia .dots i.d-orange,.cdot.d-orange{background:var(--c-orange)}
+.cal-dia .dots i.d-blue,.cdot.d-blue{background:var(--c-blue)}
+.cal-dia .dots i.d-green,.cdot.d-green{background:var(--c-green)}
+.cal-dia .dots i.d-red,.cdot.d-red{background:var(--c-red)}
+.cal-dia .dots i.d-neutral,.cdot.d-neutral{background:var(--mut)}
+
+/* ---- utilidades de pantalla (sustituyen estilos inline) ---- */
+.nota-vacia{font-size:13px; color:var(--mut); padding:6px 2px; line-height:1.5}
+.addp-tight{margin:2px 0 8px}
+.addp-dia{margin:10px 0 8px}
+.chips-hist{margin:2px 0 12px}
+.btn-vacio{max-width:240px; margin:0 auto}
+.ev h4{font-size:var(--fz-md)}
+.ev .ev-nota{font-size:var(--fz-xs); color:var(--mut); display:inline-flex; align-items:center; gap:4px; margin-top:6px}
+.ev .ev-nota svg{width:12px; height:12px}
+
+/* ---- hoja de cliente / perfil ---- */
+.perfil{display:flex; gap:13px; align-items:center; margin:12px 0 6px}
+.avatar-gran{width:54px; height:54px; border-radius:17px; font-size:21px}
+.perfil-nombre{font-size:var(--fz-2xl); font-weight:850; letter-spacing:-.7px; line-height:1.15; margin:0}
+.perfil-tel{font-size:13px; color:var(--mut); margin-top:3px; font-variant-numeric:tabular-nums}
+.perfil-nota{
+  font-size:13px; color:var(--txt-2); margin:12px 2px 0; display:flex; gap:7px; align-items:flex-start; line-height:1.5;
+}
+.perfil-nota svg{width:15px; height:15px; flex-shrink:0; margin-top:2px; color:var(--mut)}
+.btn-wa{
+  background:color-mix(in srgb,var(--c-green) 14%,var(--card)); color:var(--c-green-text);
+  border:1.5px solid color-mix(in srgb,var(--c-green) 48%,var(--line));
+  box-shadow:none; width:100%; padding:14px; margin-top:10px;
+}
+.btn-wa:hover{background:color-mix(in srgb,var(--c-green) 20%,var(--card)); filter:none}
+.btn-wa svg{width:19px; height:19px}
+.fila-pedido{padding:12px 14px}
+.fila-pedido .card-titulo{font-size:13.5px; font-weight:650}
+.fila-pedido .card-monto{font-size:13.5px}
+.card-chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; align-items:center; position:relative}
+.fila-fecha{font-size:11px; color:var(--mut); display:inline-flex; align-items:center; gap:4px; font-variant-numeric:tabular-nums}
+.fila-fecha svg{width:12px; height:12px}
+.card-fecha{display:inline-flex; align-items:center; gap:4px; white-space:nowrap}
+.card-fecha svg{width:12px; height:12px}
+.stack-lbl{font-size:12px; color:var(--mut)}
+
+/* ---- ajustes: íconos y botones ---- */
+.sic-cal{color:var(--pcal)} .sic-acc{color:var(--acc-text)} .sic-clock{color:var(--pclock)}
+.sett-btn{margin-top:12px}
+.sett-btn-sub{margin-top:9px}
+
+/* barra de cuotas del detalle: 24 pasos */
+.barra-cuotas[data-r="1/24"] .relleno{width:4.167%}
+.barra-cuotas[data-r="2/24"] .relleno{width:8.333%}
+.barra-cuotas[data-r="3/24"] .relleno{width:12.5%}
+.barra-cuotas[data-r="4/24"] .relleno{width:16.667%}
+.barra-cuotas[data-r="5/24"] .relleno{width:20.833%}
+.barra-cuotas[data-r="6/24"] .relleno{width:25.0%}
+.barra-cuotas[data-r="7/24"] .relleno{width:29.167%}
+.barra-cuotas[data-r="8/24"] .relleno{width:33.333%}
+.barra-cuotas[data-r="9/24"] .relleno{width:37.5%}
+.barra-cuotas[data-r="10/24"] .relleno{width:41.667%}
+.barra-cuotas[data-r="11/24"] .relleno{width:45.833%}
+.barra-cuotas[data-r="12/24"] .relleno{width:50.0%}
+.barra-cuotas[data-r="13/24"] .relleno{width:54.167%}
+.barra-cuotas[data-r="14/24"] .relleno{width:58.333%}
+.barra-cuotas[data-r="15/24"] .relleno{width:62.5%}
+.barra-cuotas[data-r="16/24"] .relleno{width:66.667%}
+.barra-cuotas[data-r="17/24"] .relleno{width:70.833%}
+.barra-cuotas[data-r="18/24"] .relleno{width:75.0%}
+.barra-cuotas[data-r="19/24"] .relleno{width:79.167%}
+.barra-cuotas[data-r="20/24"] .relleno{width:83.333%}
+.barra-cuotas[data-r="21/24"] .relleno{width:87.5%}
+.barra-cuotas[data-r="22/24"] .relleno{width:91.667%}
+.barra-cuotas[data-r="23/24"] .relleno{width:95.833%}
+.barra-cuotas[data-r="24/24"] .relleno{width:100.0%}
+
+/* ---- clases de visibilidad y hoja de inventario ---- */
+.oculto{display:none!important}
+.inv-previa{width:100%; max-height:220px; object-fit:cover; border-radius:16px; margin-top:12px; display:block; box-shadow:var(--sh-2)}
+.foto-acciones{display:flex; gap:8px; margin-top:12px}
+.foto-acciones .btn{margin:0; flex:1; padding:12px 8px; font-size:13px}
+.campo-seg{margin-top:16px}
+.campo-seg .campo-label{margin-bottom:8px}
+.dclose{display:flex; gap:8px; justify-content:flex-end}
+.det-est{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center}
+.det-est .strow{flex:1; min-width:0}
+.det-fecha{font-size:11px; color:var(--mut); display:inline-flex; align-items:center; gap:4px}
+.det-fecha svg{width:12px; height:12px}
+.barra-det{margin-top:14px}
+.ayuda-izq{text-align:left; margin:10px 2px 0}
+.dcard-txt{min-width:0}
+.celebra.saliendo{opacity:0}
+
+/* ---- editor de pedido ---- */
+.pick-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+.campo-label-solo{display:block; margin:4px 2px 9px}
+.seg-modo{margin-bottom:12px}
+.campo-est{margin-top:14px}
+.hint{font-size:12px; color:var(--mut); margin-top:5px; display:flex; align-items:center; gap:5px; line-height:1.45}
+.hint svg{width:13px; height:13px; flex-shrink:0}
+.hint-ok{color:var(--c-green-text)}
+
+/* ==================== ADAPTACIÓN MÓVIL (<=560px) ==================== */
+@media (max-width:560px){
+  .inv{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  nav{left:8px; right:8px; bottom:calc(8px + var(--safe-b)); padding:0 4px}
+}
+
+/* ---- pantallas compactas (<=360px): etiquetas visibles sin colisión ---- */
+@media (max-width:360px){
+  nav{left:4px; right:4px; padding:0}
+  nav button .nav-lbl{font-size:8px}
+}

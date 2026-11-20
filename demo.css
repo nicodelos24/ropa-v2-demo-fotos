@@ -1,0 +1,12 @@
+.demo-marca {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--acc-text);
+  background: var(--bg-elev);
+  font-size: 12px;
+  font-weight: 700;
+}
+#chips[hidden] { display: none; }
+#nav button .nav-lbl { display: block; font-size: 11px; }
+.lightbox .demo-marca-foto { position: absolute; top: calc(var(--safe-t) + 14px); left: 14px; }
